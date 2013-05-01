@@ -1,0 +1,29 @@
+#!/usr/bin/python
+
+import serial
+import io
+ser = serial.Serial()
+ser.baudrate = 115200
+ser.port = "/dev/ttyACM0"
+
+class CyberQ:
+  def open(self):
+    ser.open()
+  
+  def query(request):
+    ser.open()
+    ser.write(unicode(request))
+    result = ser.read(6)
+    ser.close()
+    return result
+
+  def process(rawValue) 
+    value = reduce(lambda x, y: x + y, map(lambda x, y: (ord(x) & 15) * 16 ** y, rawValue[2:6], range(4)))
+    return (value + 1) / 2
+  
+  def getPit1Temp(self):
+    return "A\n"
+
+USBConnection = CyberQ()
+pit1temp = USBConnection.query(this.getPit1Temp).process()
+print pit1temp
