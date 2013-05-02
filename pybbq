@@ -1,9 +1,17 @@
 #!/usr/local/bin/python
 
 import serial
+import time
+
 ser = serial.Serial()
-ser.baudrate = 115200
+ser.baudrate = 9600
+ser.writeTimeout = 1000
+#ser.interCharTimeout = 5 
+ser.timeout  = 1000
+
+# Raspberry Pi
 # ser.port = "/dev/ttyACM0"
+# Macbook Air
 ser.port = "/dev/tty.usbmodemfa131"
 
 class CyberQ:
@@ -75,23 +83,41 @@ class CyberQ:
 
   def GetUSBValue(self, grillValue):
     result = ''
-    print str(((grillValue & 0XF) / 1 + 48))
-    print str(((grillValue & 0XF0) / 16 + 48))
-    print str(((grillValue & 0XF00) / 256 + 48))
-    print str(((grillValue & 0XF000) / 4096 + 48))
-    print "^"
+    result = result + chr(((grillValue & 0XF) / 1 + 48))
+    result = result + chr(((grillValue & 0XF0) / 16 + 48))
+    result = result + chr(((grillValue & 0XF00) / 256 + 48))
+    result = result + chr(((grillValue & 0XF000) / 4096 + 48))
+    result = result + "^"
     return result
 
-  def setPit1Set(self, temp):
-    temp = 180
-    request = "~h52594848^" 
+  def setPit1(self, temp):
+    temp = temp * 2
+    request = "~h"
+    request = request + self.GetUSBValue(temp)
     ser.open()
-    ser.write(request)
+    ser.write(unicode(request))
     ser.close()
-    return request
+
+  def setPit2(self, temp):
+    temp = temp * 2
+    request = "~i"
+    request = request + self.GetUSBValue(temp)
+    ser.open()
+    ser.write(unicode(request))
+    ser.close()
+
+  def test(self, command):
+    rawValue = self.query(command)
+    value = self.process(rawValue)
+    return value 
 
 USBConnection = CyberQ()
 pit1temp = USBConnection.getPit1Temp()
-pit1set = USBConnection.setPit1Set(180)
+time.sleep(0.5)
+pit1set = USBConnection.setPit1(80)
+time.sleep(0.5)
+test = USBConnection.test("H");
+time.sleep(0.5)
 print pit1temp
 print pit1set
+print test
