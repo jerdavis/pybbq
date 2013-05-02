@@ -100,8 +100,21 @@ class CyberQ:
 
   def setPit2(self, temp):
     temp = temp * 2
-    request = "~i"
-    request = request + self.GetUSBValue(temp)
+    request = "~i" + self.GetUSBValue(temp)
+    ser.open()
+    ser.write(unicode(request))
+    ser.close()
+
+  def setFood1(self, temp):
+    temp = temp * 2
+    request = "~l" + self.GetUSBValue(temp)
+    ser.open()
+    ser.write(unicode(request))
+    ser.close()
+
+  def setFood2(self, temp):
+    temp = temp * 2
+    request = "~m" + self.GetUSBValue(temp)
     ser.open()
     ser.write(unicode(request))
     ser.close()
@@ -116,8 +129,9 @@ pit1temp = USBConnection.getPit1Temp()
 time.sleep(0.5)
 pit1set = USBConnection.setPit1(80)
 time.sleep(0.5)
-test = USBConnection.test("H");
+USBConnection.setFood1(130)
+test = USBConnection.test("H")
+test = USBConnection.test("L")
 time.sleep(0.5)
 print pit1temp
-print pit1set
 print test
