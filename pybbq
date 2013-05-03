@@ -15,6 +15,19 @@ ser.timeout  = 1000
 ser.port = "/dev/tty.usbmodemfa131"
 
 class CyberQ:
+ 
+  def write(self, request):
+    ser.open()
+    ser.write(unicode(request))
+    ser.close()
+    return self
+ 
+  def read(self, request, length = 6):
+    ser.open()
+    ser.write(unicode(request))
+    rawValue = ser.read(length)
+    ser.close
+    return rawValue
   
   def query(self, request):
     ser.open()
